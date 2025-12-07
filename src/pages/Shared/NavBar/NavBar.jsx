@@ -4,6 +4,7 @@ import Logo from '../../../components/Logo/Logo';
 
 const NavBar = () => {
     const links = <>
+        <li><NavLink to="/">Home</NavLink></li>
         <li><NavLink to="/clubs">Clubs</NavLink></li>
         <li><NavLink to="/events">Events</NavLink></li>
     </>
