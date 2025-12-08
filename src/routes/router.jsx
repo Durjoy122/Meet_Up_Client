@@ -8,6 +8,10 @@ import Events from '../pages/Events/Events.jsx';
 import Clubs from '../pages/Clubs/Clubs.jsx';
 import Login from '../pages/Auth/Login/Login.jsx';
 import Register from '../pages/Auth/Register/Register.jsx';
+import DashboardLayout from '../layouts/DashboardLayout.jsx';
+import DashboardHome from "../pages/DashboardHome/DashboardHome.jsx";
+import UsersManagement from '../pages/Dashboard/UserManagement/UsersManagement.jsx';
+import CreateClubs from '../pages/Clubs/CreateClubs.jsx';
 
 export const router = createBrowserRouter([
     {
@@ -21,6 +25,11 @@ export const router = createBrowserRouter([
             {
                 path: 'clubs',
                 Component: Clubs
+            },
+            {
+                path: 'create-clubs',
+                Component: CreateClubs,
+                loader: () => fetch('/serviceCenters.json').then(res => res.json())
             },
             {
                 path: 'events',
@@ -40,6 +49,20 @@ export const router = createBrowserRouter([
             {
                 path: 'register',
                 Component: Register
+            }
+        ]
+    },
+    {
+        path: 'dashboard',
+        Component: DashboardLayout,
+        children: [
+            {
+                index: true,
+                Component: DashboardHome
+            },
+            {
+                path: 'users-management',
+                element: <UsersManagement />
             }
         ]
     }

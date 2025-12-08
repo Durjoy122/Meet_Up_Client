@@ -1,16 +1,27 @@
 import React from 'react';
 import useAuth from '../../../hooks/useAuth';
 import { useLocation, useNavigate } from 'react-router';
+import useAxios from '../../../hooks/useAxios';
 
 const SocialLogin = () => {
     const { signInGoogle } = useAuth();
+    const axios = useAxios();
     const location = useLocation();
     const navigate = useNavigate();
     const handleGoogleSignIn = () => {
         signInGoogle()
             .then(result => {
                 console.log(result.user);
-                navigate(location.state || '/');
+                const userInfo = {
+                    email: result.user.email,
+                    displayName: result.user.displayName,
+                    photoURL: result.user.photoURL
+                }
+                axios.post('/users', userInfo)
+                    .then(res => {
+                        console.log('user data has been stored', res.data)
+                        navigate(location.state || '/');
+                    })
             })
             .catch(error => {
                 console.log(error)
@@ -28,7 +39,7 @@ const SocialLogin = () => {
                     d="m90 341a208 200 0 010-171l63 49q-12 37 0 73"></path><path fill="#ea4335" 
                     d="m153 219c22-69 116-109 179-50l55-54c-78-75-230-72-297 55">
                         </path></g></svg>
-                Login with Google
+                    Login with Google
             </button>
         </div>
     );
