@@ -62,6 +62,14 @@ const DashboardLayout = () => {
                                 </li>
 
 
+                                <li>
+                                    <NavLink className="is-drawer-close:tooltip is-drawer-close:tooltip-right" data-tip="Approve Clubs" to="/dashboard/approve-clubs">
+                                        <GiCard10Clubs />
+                                        <span className="is-drawer-close:hidden">Approve Clubs</span>
+                                    </NavLink>
+                                </li>
+
+
 
                                 <li>
                                     <NavLink className="is-drawer-close:tooltip is-drawer-close:tooltip-right" data-tip="Payment History" to="/dashboard/payment-history">

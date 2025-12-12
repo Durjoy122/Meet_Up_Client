@@ -12,6 +12,10 @@ import DashboardLayout from '../layouts/DashboardLayout.jsx';
 import DashboardHome from "../pages/DashboardHome/DashboardHome.jsx";
 import UsersManagement from '../pages/Dashboard/UserManagement/UsersManagement.jsx';
 import CreateClubs from '../pages/Clubs/CreateClubs.jsx';
+import ApproveClubs from '../pages/Dashboard/ApproveClubs/ApproveClubs.jsx';
+import ClubDetails from '../pages/Clubs/ClubDetails.jsx';
+import Payment from '../pages/Dashboard/Payment/Payment.jsx';
+import PaymentSuccess from '../pages/Dashboard/Payment/PaymentSuccess.jsx';
 
 export const router = createBrowserRouter([
     {
@@ -63,6 +67,26 @@ export const router = createBrowserRouter([
             {
                 path: 'users-management',
                 element: <UsersManagement />
+            }
+            ,
+            {
+                path: 'approve-clubs',
+                element: <ApproveClubs />
+            }
+            ,
+            {
+                path: "clubs/:id",
+                element: <ClubDetails />
+            }
+            ,
+            {
+                path: 'payment/:clubId',
+                element: <Payment />
+            }
+            ,
+            {
+                path: 'payment-success',
+                element: <PaymentSuccess />
             }
         ]
     }

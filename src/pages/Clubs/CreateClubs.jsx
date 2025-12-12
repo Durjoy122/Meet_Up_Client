@@ -12,6 +12,8 @@ const CreateClubs = () => {
     const serviceCenters = useLoaderData();
     const axios = useAxios();
 
+    const [bannerImage, setBannerImage] = useState(null);
+
     const regions = [...new Set(serviceCenters.map(c => c.region))];
     const creatorRegion = useWatch({ control, name: 'creatorRegion' });
 
@@ -20,8 +22,17 @@ const CreateClubs = () => {
         return regionDistricts.map(d => d.district);
     }
 
-    const createClub = (data) => {
-        console.log(data);
+    const createClub = async (data) => {
+        const formData = new FormData();
+
+        Object.keys(data).forEach(key => {
+            formData.append(key, data[key]);
+        });
+
+        if (bannerImage) {
+            formData.append("bannerImage", bannerImage);
+        }
+
         Swal.fire({
             title: "Club Will be Created",
             icon: "warning",
@@ -29,22 +40,26 @@ const CreateClubs = () => {
             confirmButtonColor: "#3085d6",
             cancelButtonColor: "#d33",
             confirmButtonText: "Confirm and Continue!"
-        }).then((result) => {
+        }).then(async (result) => {
             if (result.isConfirmed) {
-                axios.post('/clubs', data).then(res => {
-                    if (res.data.insertedId) {
-                        Swal.fire({
-                            position: "top-end",
-                            icon: "success",
-                            title: "Club has been created.",
-                            showConfirmButton: false,
-                            timer: 2500
-                        });
-                    }
+                const res = await axios.post('/clubs', formData, {
+                    headers: { "Content-Type": "multipart/form-data" }
                 });
+
+                if (res.data.insertedId) {
+                    Swal.fire({
+                        position: "top-end",
+                        icon: "success",
+                        title: "Club has been created.",
+                        showConfirmButton: false,
+                        timer: 2500
+                    });
+
+                    navigate("/dashboard/approve-clubs");
+                }
             }
         });
-    }
+    };
 
     return (
         <div>
@@ -71,7 +86,6 @@ const CreateClubs = () => {
                     </fieldset>
                 </div>
 
-                {/* Creator details */}
                 <div className='grid grid-cols-1 md:grid-cols-2 gap-12'>
                     <fieldset className="fieldset">
                         <label className="label">Creator Name</label>
@@ -90,22 +104,40 @@ const CreateClubs = () => {
 
                         <fieldset className="fieldset">
                             <legend className="fieldset-legend">City</legend>
-                            <select {...register('creatorDistrict')} defaultValue="Pick a district" className="select">
+                            <select {...register('clubDistrict')} defaultValue="Pick a district" className="select">
                                 <option disabled>Pick a district</option>
                                 {districtsByRegion(creatorRegion).map((d, i) => <option key={i} value={d}>{d}</option>)}
                             </select>
                         </fieldset>
 
                         <label className="label mt-4">Description</label>
-                        <input type="text" {...register('creatorAddress')} className="input w-full" placeholder="Description" />
+                        <input type="text" {...register('clubDescription')} className="input w-full" placeholder="Description" />
+
+                        <label className="label">Status</label>
+                        <select {...register("status")} defaultValue="Pending" className="select">
+                            <option value="Pending">Pending</option>
+                        </select>
                     </fieldset>
 
                     {/* Additional Club info */}
                     <fieldset className="fieldset">
                         <label className="label">Banner Image</label>
-                        <input type="file" {...register('bannerImage')} className="input w-full" accept="image/*" />
+                        <input
+                            type="file"
+                            accept="image/*"
+                            className="input w-full"
+                            onChange={(e) => setBannerImage(e.target.files[0])}
+                        />
 
-                        <label className="label mt-4">Membership Fee</label>
+                        {bannerImage && (
+                            <img
+                                src={URL.createObjectURL(bannerImage)}
+                                alt="Preview"
+                                className="h-40 w-full object-cover rounded-lg mt-2 border"
+                            />
+                        )}
+
+                        <label className="label mt-1">Membership Fee</label>
                         <input type="number" {...register('membershipFee', { valueAsNumber: true })} defaultValue={0} className="input w-full" />
 
                         <input type="hidden" {...register('createdAt')} value={new Date().toISOString()} />
